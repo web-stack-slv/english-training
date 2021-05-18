@@ -8,6 +8,16 @@
 </head>
 <body>
     <canvas id="space-canvas" width="400" height="600" style="margin-left:40%"></canvas>
-    <script src="js/game.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        new SpaceTrip({
+            canvasId: 'space-canvas',
+            data: words,
+            imgDir: 'img',
+            audioDir: 'audio',
+            audioOn: true
+        });
+    </script>    
 </body>
 </html>
