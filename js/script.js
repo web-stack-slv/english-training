@@ -100,8 +100,7 @@ function SpaceTrip(options) {
                     stop = false;
                     draw();
                 } else if(isStarted && stop) {
-                    callbackFinished();
-                    document.location.reload();
+                    callbackFinished();                    
                 }                
                 break;
         }
@@ -134,7 +133,6 @@ function SpaceTrip(options) {
             }           
         } else if(isStarted && stop && intersects(x, y, centerX, centerY+50, 60)) {
             callbackFinished();
-            document.location.reload();
         } else if(!stop && isStarted && y > spaceHeight - 120) {
             e.preventDefault();	
             e.stopPropagation();
@@ -161,7 +159,6 @@ function SpaceTrip(options) {
             } 
         } else if(isStarted && stop && intersects(x, y, centerX, centerY+50, 60)) {
             callbackFinished();
-            document.location.reload();
         } else if(!stop && isStarted && y > spaceHeight-120) {            
             moveShip(x);
         }
@@ -199,7 +196,7 @@ function SpaceTrip(options) {
     }
 
     function moveLeft() {
-        shipX -= speed*4;
+        shipX -= speed*5;
         if(shipX < 0) {
             shipX = 0;
         }
@@ -207,7 +204,7 @@ function SpaceTrip(options) {
     }
     
     function moveRight() {
-        shipX += speed*4;
+        shipX += speed*5;
         if(shipX > spaceWidth - shipWidth) {
             shipX = spaceWidth - shipWidth;
         }
@@ -344,7 +341,7 @@ function SpaceTrip(options) {
         ctx.drawImage(bg1, 0, bgY-bg.height,  cvs.width, bg.height);        
         ctx.drawImage(spaceship, shipX, spaceHeight - 120);
         const startGapX = Math.floor(spaceWidth/(pipes.length + 1));
-        const galaxyGapX = Math.floor(spaceWidth/(words[0].variants.length + 1));
+        const galaxyGapX = Math.floor(spaceWidth/(data[0].variants.length + 1));
 
         pipes.map((pipe, idx) => {
             drawStar(startGapX + idx*startGapX,100,5,10,5, pipe.result);
@@ -361,7 +358,7 @@ function SpaceTrip(options) {
         
                 if(pipes[i].y === spaceHeight - 110) {
                     pipes[i].isActivated = true;
-                    const isFail = checkGalaxy(shipX, words[i]);           
+                    const isFail = checkGalaxy(shipX, data[i]);           
                                       
                     if(isFail) {
                         life--;
@@ -372,19 +369,19 @@ function SpaceTrip(options) {
                             failAudio.play();
                             ohNoAudio.play();
                         }                        
-                        callbackFailure();
+                        callbackFailure(pipes[i]);
                     } else {
                         message = 'Great!';
                         if(audioOn) greatAudio.play();
                         pipes[i].result = 'success';
-                        callbackSuccess();
+                        callbackSuccess(pipes[i]);
                     }
         
                     progress++;            
         
                     setTimeout(() => {
-                        message = words[progress] ? words[progress].word : '';
-                    }, 1500);
+                        message = data[progress] ? data[progress].word : '';
+                    }, 1000);
                 }
             } 
         }          
@@ -403,7 +400,7 @@ function SpaceTrip(options) {
             bgY = 0;
         }
     
-        if(!gameFinished && (progress === words.length || !life)) {
+        if(!gameFinished && (progress === pipes.length || !life)) {
             gameFinished = true;
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '30px Cooper Black';       
@@ -412,7 +409,7 @@ function SpaceTrip(options) {
                 message = 'Spaceship destroyed...';
                 if(audioOn) destroyAudio.play();
                 ctx.fillText('GAME OVER!', centerX, centerY - 50);                                  
-            } else if(progress === words.length) {
+            } else if(progress === data.length) {
                 message = 'Great job, captain!';
                 if(audioOn) greatJobAudio.play();
                 ctx.fillText('YOU ARE WIN!', centerX, centerY - 50);                
